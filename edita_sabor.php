@@ -29,11 +29,6 @@ mysqli_close($conn);
       echo "0 results";
   }
   ?>
-  <h2>Teste</h2>
-  
-  <?php
-  //fazer lógica para os sabores cadastrados no banco aparacerem aqui
-  ?>
 </div>
 </body>
 </html>

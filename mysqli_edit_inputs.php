@@ -1,6 +1,6 @@
 <?php
 function create_inputs_mysql($result){
-  $form = "<form action='cadastra_sabor.php' method='POST'>";
+  $form = "<form action='cardapio.php' method='POST'>";
   $i = 0;
   while($row = mysqli_fetch_assoc($result)) {
       if($i == 0){
