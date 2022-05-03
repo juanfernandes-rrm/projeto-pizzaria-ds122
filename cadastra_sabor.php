@@ -1,9 +1,6 @@
 <?php
-    $sabor = $_POST["sabor"];
-    $ingredientes = $_POST["ingrediente"];
-
-    require_once 'mysqli_table.php';
     include "credentials.php";
+    require_once 'mysqli_table.php';
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -12,19 +9,46 @@
         die("Connection failed: " . mysqli_connect_error());    
     }
 
-    $sql = 
-    "INSERT INTO sabores(sabor,ingredientes) VALUES('{$sabor}','{$ingredientes}');
-    ";
+    //
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        $sabor = $_POST["sabor"];
+        $ingredientes = $_POST["ingrediente"];
 
-    if(!mysqli_query($conn,$sql)){
-      die("Connection failed: " . mysqli_error($conn));
+        $sql = 
+        "INSERT INTO sabores(sabor,ingredientes) VALUES('{$sabor}','{$ingredientes}');
+        ";
+
+        if(!mysqli_query($conn,$sql)){
+            die("Insert failed: " . mysqli_error($conn));
+        }
+
+
+    }else if($_SERVER["REQUEST_METHOD"] == "GET"){
+        if(isset($_GET["acao"]) && isset($_GET["id"])){
+
+            $sql="";
+            $id=$_GET["id"];
+            //fazer tratamento de dados
+            
+            if($_GET["acao"]=="remover"){
+                $sql="DELETE FROM {$tablename} WHERE pkidsabor={$id} ";
+
+                if(!mysqli_query($conn,$sql)){
+                    die("Delete failed: " . mysqli_error($conn));
+                }
+            }
+
+        }
     }
+
+    //
+    
 
     echo "Connected successfully";
 ?>
 
 <?php
-$sql = "SELECT sabor,ingredientes FROM sabores";
+$sql = "SELECT pkidsabor,sabor,ingredientes FROM sabores";
 $result = mysqli_query($conn, $sql);
 
 mysqli_close($conn);

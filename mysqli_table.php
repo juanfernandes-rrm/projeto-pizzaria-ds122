@@ -8,6 +8,8 @@ function create_table_row($cells){
   foreach ($cells as $key => $value) {
     $row .= create_table_cell($value);
   }
+  $row .= "<td><button>{$cells["pkidsabor"]}</button></td>";
+  $row .= "<td><a href=' ".$_SERVER['PHP_SELF']. "?id=" .$cells['pkidsabor']. "&" . "acao=remover" . "'>Deletar</a></td>";
   $row .= "</tr>";
   return $row;
 }

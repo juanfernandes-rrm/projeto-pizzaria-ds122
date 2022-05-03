@@ -10,8 +10,9 @@ if (!$conn) {
 }
 
 //create table
+
 $sql = 
-"CREATE TABLE sabores(
+"CREATE TABLE {$tablename}(
    pkidsabor INT(6) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
    sabor varchar(50) NOT NULL,
    ingredientes varchar(300)
