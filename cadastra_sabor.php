@@ -11,18 +11,31 @@
 
     //
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-        $sabor = $_POST["sabor"];
-        $ingredientes = $_POST["ingrediente"];
+        if(isset($_POST["cadastrar-sabor"])){
+            $sabor = $_POST["cadastrar-sabor"];
+            $ingredientes = $_POST["ingrediente"];
 
-        $sql = 
-        "INSERT INTO sabores(sabor,ingredientes) VALUES('{$sabor}','{$ingredientes}');
-        ";
+            $sql = 
+            "INSERT INTO sabores(sabor,ingredientes) VALUES('{$sabor}','{$ingredientes}');
+            ";
 
-        if(!mysqli_query($conn,$sql)){
-            die("Insert failed: " . mysqli_error($conn));
+            if(!mysqli_query($conn,$sql)){
+                die("Insert failed: " . mysqli_error($conn));
+            }
+            mysqli_close($conn);
+
+        }else if(isset($_POST["editar-sabor"])){
+            $id = $_POST["editar-pkidsabor"];
+            $sabor = $_POST["editar-sabor"];
+            $ingredientes = $_POST["editar-ingredientes"];
+
+            $sql="UPDATE sabores SET sabor='$sabor', ingredientes='$ingredientes' WHERE pkidsabor=$id ";
+
+            if(!mysqli_query($conn,$sql)){
+                die("Update failed: " . mysqli_error($conn));
+            }
+            mysqli_close($conn);
         }
-
-
     }else if($_SERVER["REQUEST_METHOD"] == "GET"){
         if(isset($_GET["acao"]) && isset($_GET["id"])){
 
@@ -30,14 +43,15 @@
             $id=$_GET["id"];
             //fazer tratamento de dados
             
-            if($_GET["acao"]=="remover"){
+            if($_GET["acao"]=="deletar"){
                 $sql="DELETE FROM {$tablename} WHERE pkidsabor={$id} ";
 
                 if(!mysqli_query($conn,$sql)){
                     die("Delete failed: " . mysqli_error($conn));
                 }
-            }
 
+                mysqli_close($conn);
+            }
         }
     }
 
@@ -48,9 +62,9 @@
 ?>
 
 <?php
+$conn = new mysqli($servername, $username, $password, $dbname);
 $sql = "SELECT pkidsabor,sabor,ingredientes FROM sabores";
 $result = mysqli_query($conn, $sql);
-
 mysqli_close($conn);
 ?>
 <!DOCTYPE html>
@@ -73,6 +87,7 @@ mysqli_close($conn);
   }
   ?>
   <h2>Teste</h2>
+  
   <?php
   //fazer lógica para os sabores cadastrados no banco aparacerem aqui
   ?>
