@@ -14,9 +14,10 @@
         if(isset($_POST["cadastrar-sabor"])){
             $sabor = $_POST["cadastrar-sabor"];
             $ingredientes = $_POST["ingrediente"];
+            $categoria = $_POST["categoria"];
 
             $sql = 
-            "INSERT INTO sabores(sabor,ingredientes) VALUES('{$sabor}','{$ingredientes}');
+            "INSERT INTO sabor(sabor,ingredientes,fkidtipo_sabor) VALUES('{$sabor}','{$ingredientes}','{$categoria}');
             ";
 
             if(!mysqli_query($conn,$sql)){
@@ -29,7 +30,7 @@
             $sabor = $_POST["editar-sabor"];
             $ingredientes = $_POST["editar-ingredientes"];
 
-            $sql="UPDATE sabores SET sabor='$sabor', ingredientes='$ingredientes' WHERE pkidsabor=$id ";
+            $sql="UPDATE sabor SET sabor='$sabor', ingredientes='$ingredientes' WHERE pkidsabor=$id ";
 
             if(!mysqli_query($conn,$sql)){
                 die("Update failed: " . mysqli_error($conn));
@@ -44,7 +45,7 @@
             //fazer tratamento de dados
             
             if($_GET["acao"]=="deletar"){
-                $sql="DELETE FROM {$tablename} WHERE pkidsabor={$id} ";
+                $sql="DELETE FROM sabor WHERE pkidsabor={$id} ";
 
                 if(!mysqli_query($conn,$sql)){
                     die("Delete failed: " . mysqli_error($conn));
@@ -57,10 +58,7 @@
 ?>
 
 <?php
-$conn = new mysqli($servername, $username, $password, $dbname);
-$sql = "SELECT pkidsabor,sabor,ingredientes FROM sabores";
-$result = mysqli_query($conn, $sql);
-mysqli_close($conn);
+    
 ?>
 <!DOCTYPE html>
 <html>
@@ -139,6 +137,29 @@ mysqli_close($conn);
                               <input type="text" class="form-control" name="cadastrar-sabor" id="sabor" aria-describedby="helpId">
                               <label for="ingrediente">Ingredientes</label>
                               <input type="text" class="form-control" name="ingrediente" id="ingrediente" aria-describedby="helpId">
+                              <label for="categoria">Categoria do sabor</label>
+                              <select class="form-control" name="categoria" id="categoria">
+                                <option value="" selected = selected>Selecione uma categoria</option>
+                                <?php 
+                                    //consertar esse combo box
+                                    $conn = new mysqli($servername, $username, $password, $dbname);
+                                    $sql = "SELECT pkidtipo_sabor,descricao FROM tipo_sabor";
+
+                                    if(!$result=mysqli_query($conn,$sql)){
+                                        die("Select combox failed: " . mysqli_error($conn));
+                                    }
+
+                                    $total = mysqli_num_rows($result);
+                                    mysqli_close($conn);
+
+                                    $option = "<option>";
+                                    if($total>0){
+                                        while($line = mysqli_fetch_assoc($result)){
+                                            echo "<option value='". $line["pkidtipo_sabor"] ."'>". $line["descricao"] ."</option>";
+                                        }
+                                    }
+                                ?> 
+                              </select>
                             </div>
                             <input type="submit" name="cadastrar" class="btn btn-success" value="Cadastrar"/>
                         </form>
@@ -160,31 +181,18 @@ mysqli_close($conn);
             Cadastrar sabor
         </button>
 
-        <!--
-        <section id="pizzas-salgadas" name="pizzas-salgadas">
-            <h1>Pizzas salgadas</h1>
-            <article>
-                <h2>Sabores Tradicionais</h2>
-                <ul>
-                    <li>
-                        <p name="sabor">BACON COM CHEDDAR</p>
-                        <p name="ingrediente">Mussarela, bacon e cheddar</p>
-                    </li>
-                </ul>
-            </article>
-            <article>
-                <h2>Sabores Especiais</h2>
-            </article>
-            <article>
-                <h2>Sabores Nobres</h2>
-            </article>
-            <article>
-                <h2>Sabores Fits</h2>
-            </article>
-        </section>
--->
+
         <div class="container">
         <?php
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            $sql = "SELECT sabor.pkidsabor,sabor.sabor,sabor.ingredientes,tipo_sabor.descricao 
+                    FROM sabor, tipo_sabor
+                    WHERE sabor.fkidtipo_sabor = tipo_sabor.pkidtipo_sabor";
+            if(!$result = mysqli_query($conn,$sql)){
+                die("Select failed: " . mysqli_error($conn));
+            }
+            mysqli_close($conn);
+
             if (mysqli_num_rows($result) > 0) {
                 echo create_table_mysql($result);
             } else {
