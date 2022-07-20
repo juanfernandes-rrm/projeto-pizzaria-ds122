@@ -6,3 +6,6 @@ Um sistema de pedido de pizza.
 
 ## Tecnologias
 HTML
+CSS
+PHP
+MySQL
