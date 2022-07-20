@@ -5,7 +5,7 @@ Projeto final da disciplina Desenvolvimento Web I
 Um sistema de pedido de pizza.
 
 ## Tecnologias
-HTML
-CSS
-PHP
-MySQL
+- HTML
+- CSS
+- PHP
+- MySQL
